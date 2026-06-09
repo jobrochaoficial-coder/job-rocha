@@ -20,7 +20,7 @@
     --max: 1200px;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
   body {
     background: var(--bg);
     color: var(--text);
@@ -182,7 +182,7 @@
   .info-row:hover .meta .value { color: var(--accent); }
 
   .form-card { border:1px solid var(--border); border-radius:22px; padding: 48px; background: var(--bg-soft); position: relative; }
-  .form-card .hp { position:absolute; left:-9999px; opacity:0; pointer-events:none; }
+  .form-card .hp { position:absolute; top:-9999px; left:0; opacity:0; pointer-events:none; }
   .form-error { color: #e3a07a; }
   .form-success {
     display:flex; flex-direction:column; align-items:center; text-align:center; gap:14px;
@@ -259,6 +259,8 @@
     .nav-links a { display:block; padding: 18px 32px; }
     .nav-links a::after { display:none; }
 
+    [data-reveal="right"] { transform: translateY(36px); }
+    [data-reveal="right"].in-view { transform: translateY(0); }
     .wa-float { width: 46px; height: 46px; bottom: 96px; right: 18px; transition: opacity .3s ease, visibility .3s ease; }
     .wa-float svg { width: 22px; height: 22px; }
     .wa-float.is-hidden { transform: none; }
