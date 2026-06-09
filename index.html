@@ -259,8 +259,9 @@
     .nav-links a { display:block; padding: 18px 32px; }
     .nav-links a::after { display:none; }
 
-    .wa-float { width: 46px; height: 46px; bottom: 96px; right: 18px; }
+    .wa-float { width: 46px; height: 46px; bottom: 96px; right: 18px; transition: opacity .3s ease, visibility .3s ease; }
     .wa-float svg { width: 22px; height: 22px; }
+    .wa-float.is-hidden { transform: none; }
   }
   @media (max-width: 640px) {
     .wrap { padding: 0 22px; }
@@ -506,6 +507,7 @@
 
   // Oculta el botón flotante de WhatsApp al entrar a "Contacto" para que no tape el correo ni "Enviar mensaje"
   const waFloat = document.querySelector('.wa-float');
+  if (waFloat) waFloat.classList.remove('is-hidden');
   const contactSection = document.getElementById('contacto');
   if (waFloat && contactSection) {
     const waIO = new IntersectionObserver((entries) => {
