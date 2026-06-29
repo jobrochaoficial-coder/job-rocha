@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Job Rocha — Diseñador Web &amp; Marca Personal</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -170,6 +175,21 @@
   .pf-link svg { width:15px; height:15px; transition: transform .3s ease; }
   .pf-card:hover .pf-link svg { transform: translate(3px,-3px); }
 
+  /* FAQ */
+  .faq { padding: 150px 0; }
+  .faq-list { max-width: 760px; margin: 0 auto; display:flex; flex-direction:column; gap:14px; }
+  .faq-item { border:1px solid var(--border); border-radius:16px; overflow:hidden; background: linear-gradient(135deg, rgba(201,160,106,0.05), transparent 60%); transition: border-color .35s ease; }
+  .faq-item.is-open { border-color: var(--accent); }
+  .faq-q {
+    width:100%; display:flex; align-items:center; justify-content:space-between; gap:20px;
+    padding: 26px 30px; background:transparent; border:none; cursor:pointer; text-align:left;
+    font-family: var(--serif); font-size:1.1rem; font-weight:600; color: var(--text);
+  }
+  .faq-chevron { flex-shrink:0; color: var(--accent); transition: transform .35s cubic-bezier(.16,1,.3,1); }
+  .faq-item.is-open .faq-chevron { transform: rotate(180deg); }
+  .faq-a { max-height:0; overflow:hidden; transition: max-height .45s cubic-bezier(.16,1,.3,1); }
+  .faq-a p { padding: 0 30px 26px; color: var(--text-muted); font-size:0.98rem; line-height:1.65; max-width: 620px; }
+
   /* CONTACTO */
   .contact { padding: 150px 0 100px; }
   .contact-grid { display:grid; grid-template-columns: 1fr 1.15fr; gap: 70px; }
@@ -190,6 +210,7 @@
     display:flex; flex-direction:column; align-items:center; text-align:center; gap:14px;
     padding: 38px 10px; animation: form-success-in .6s cubic-bezier(.16,1,.3,1);
   }
+  .form-success[hidden] { display:none; }
   .form-success .check {
     width:64px; height:64px; border-radius:50%; border:1px solid var(--accent); color: var(--accent);
     display:flex; align-items:center; justify-content:center;
@@ -247,6 +268,9 @@
     .about { padding: 40px 0 32px; }
     .services { padding: 36px 0; }
     .portfolio { padding: 36px 0 44px; }
+    .faq { padding: 36px 0; }
+    .faq-q { padding: 20px 22px; font-size:1rem; }
+    .faq-a p { padding: 0 22px 20px; }
     .contact { padding: 40px 0 32px; }
 
     .nav-toggle { display:flex; }
@@ -258,7 +282,7 @@
       max-height: 0; overflow:hidden;
       transition: max-height .45s cubic-bezier(.16,1,.3,1);
     }
-    .nav-links.open { max-height: 360px; }
+    .nav-links.open { max-height: 420px; }
     .nav-links li { border-top: 1px solid var(--border); }
     .nav-links li:first-child { border-top:none; }
     .nav-links a { display:block; padding: 18px 32px; }
@@ -276,6 +300,7 @@
     .about { padding: 32px 0 24px; }
     .services { padding: 28px 0; }
     .portfolio { padding: 28px 0 36px; }
+    .faq { padding: 28px 0; }
     .contact { padding: 32px 0 24px; }
     .info-row .meta .value { font-size: 0.92rem; overflow-wrap: anywhere; }
   }
@@ -296,6 +321,7 @@
       <li><a href="#sobre-mi">Sobre mí</a></li>
       <li><a href="#servicios">Servicios</a></li>
       <li><a href="#portafolio">Portafolio</a></li>
+      <li><a href="#faq">FAQ</a></li>
       <li><a href="#contacto">Contacto</a></li>
     </ul>
     <button class="nav-toggle" id="navToggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="navLinks">
@@ -420,6 +446,108 @@
   </div>
 </section>
 
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow">FAQ</p>
+      <h2 class="section-title">Preguntas <span class="gold">frecuentes</span></h2>
+      <p>Las dudas más comunes antes de empezar tu proyecto.</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item" data-reveal>
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-1" id="faq-q-1">
+          <span>¿Qué incluye el servicio de diseño web?</span>
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-1" role="region" aria-labelledby="faq-q-1">
+          <p>Un sitio profesional, a la medida de tu negocio, que se ve perfecto en celular y computadora, con tu información, productos o servicios, y formas de contacto.</p>
+        </div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-2" id="faq-q-2">
+          <span>¿Cuánto cuesta una página web?</span>
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-2" role="region" aria-labelledby="faq-q-2">
+          <p>El precio depende de lo que tu negocio necesite (desde una página sencilla hasta una tienda en línea). Contáctame y te doy un presupuesto a la medida, sin compromiso.</p>
+        </div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-3" id="faq-q-3">
+          <span>¿Cobras mensualidad?</span>
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-3" role="region" aria-labelledby="faq-q-3">
+          <p>No. Pagas una sola vez por tu sitio. Solo cubres el costo anual de tu dominio (tu dirección .com). Sin rentas mensuales.</p>
+        </div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-4" id="faq-q-4">
+          <span>¿Cuánto tiempo tarda en estar lista?</span>
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-4" role="region" aria-labelledby="faq-q-4">
+          <p>Depende del proyecto. Un sitio sencillo puede estar en pocos días; uno más completo toma más tiempo. Te doy un estimado al inicio.</p>
+        </div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-5" id="faq-q-5">
+          <span>¿La página se verá bien en celular?</span>
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-5" role="region" aria-labelledby="faq-q-5">
+          <p>Sí. Todos mis sitios están diseñados para verse y funcionar perfecto en celular, tablet y computadora.</p>
+        </div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-6" id="faq-q-6">
+          <span>¿Puedo pedir cambios después?</span>
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-6" role="region" aria-labelledby="faq-q-6">
+          <p>Sí. Cada proyecto incluye ajustes, y ofrezco mantenimiento opcional para actualizaciones futuras.</p>
+        </div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-7" id="faq-q-7">
+          <span>¿Necesito saber de tecnología?</span>
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-7" role="region" aria-labelledby="faq-q-7">
+          <p>Para nada. Yo me encargo de todo el aspecto técnico. Tú solo me dices qué necesitas y yo lo construyo.</p>
+        </div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-8" id="faq-q-8">
+          <span>¿Cómo es el proceso de pago?</span>
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-8" role="region" aria-labelledby="faq-q-8">
+          <p>Normalmente un anticipo para empezar y el resto al entregar. Lo acordamos según el proyecto.</p>
+        </div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-9" id="faq-q-9">
+          <span>¿Haces tiendas en línea?</span>
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-9" role="region" aria-labelledby="faq-q-9">
+          <p>Sí, puedo crear catálogos y tiendas para que muestres y vendas tus productos. Cuéntame tu idea y vemos la mejor solución.</p>
+        </div>
+      </div>
+      <div class="faq-item" data-reveal>
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a-10" id="faq-q-10">
+          <span>¿Cómo te contacto?</span>
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="faq-a" id="faq-a-10" role="region" aria-labelledby="faq-q-10">
+          <p>Por el formulario de esta página, o directo por WhatsApp/correo. ¡Con gusto resuelvo tus dudas!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="contact" id="contacto">
   <div class="wrap contact-grid">
     <div class="contact-info" data-reveal="left">
@@ -522,6 +650,24 @@
     });
     navLinks.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
   }
+
+  // Acordeón de Preguntas Frecuentes
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const btn = item.querySelector('.faq-q');
+    const panel = item.querySelector('.faq-a');
+    btn.addEventListener('click', () => {
+      const isOpen = item.classList.contains('is-open');
+      if (isOpen) {
+        item.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+        panel.style.maxHeight = '';
+      } else {
+        item.classList.add('is-open');
+        btn.setAttribute('aria-expanded', 'true');
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+      }
+    });
+  });
 
   // Oculta el botón flotante de WhatsApp al entrar a "Contacto" para que no tape el correo ni "Enviar mensaje"
   const waFloat = document.querySelector('.wa-float');
