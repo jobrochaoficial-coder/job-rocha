@@ -233,12 +233,12 @@
   /* FOOTER */
   footer { border-top:1px solid var(--border); padding: 40px 0; }
   .footer-inner { display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between; }
-  .footer-left { display:flex; flex-direction:column; gap:8px; }
-  .footer-inner p { font-size:0.86rem; color: var(--text-muted); }
-  .footer-legal { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-  .footer-legal a { font-size:0.8rem; color: var(--text-muted); transition: color .3s ease; }
+  .footer-left { display:flex; flex-direction:column; gap:6px; }
+  .footer-inner p { font-size:0.83rem; color: var(--text-muted); }
+  .footer-legal { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .footer-legal a { font-size:0.83rem; color: var(--text-muted); transition: color .3s ease; }
   .footer-legal a:hover { color: var(--accent); }
-  .footer-sep { color: var(--border); font-size:0.8rem; }
+  .footer-sep { color: rgba(255,255,255,0.22); font-size:0.75rem; user-select:none; }
   .socials { display:flex; gap: 18px; }
   .socials a { width:42px; height:42px; border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; transition: border-color .3s ease, color .3s ease, transform .3s ease; color: var(--text-muted); }
   .socials a:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); }
@@ -614,12 +614,12 @@
 <footer>
   <div class="wrap footer-inner">
     <div class="footer-left">
-      <p>&copy; <span id="year"></span> Job Rocha. Todos los derechos reservados.</p>
       <div class="footer-legal">
         <a href="aviso-privacidad.html">Aviso de Privacidad</a>
-        <span class="footer-sep">·</span>
+        <span class="footer-sep">|</span>
         <a href="terminos-condiciones.html">Términos y Condiciones</a>
       </div>
+      <p>&copy; <span id="year"></span> Job Rocha. Todos los derechos reservados.</p>
     </div>
     <div class="socials">
       <a href="https://instagram.com/jobrocha.oficial" target="_blank" rel="noopener" aria-label="Instagram">
