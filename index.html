@@ -229,6 +229,15 @@
   .field textarea { resize: vertical; min-height: 110px; }
   .field input::placeholder, .field textarea::placeholder { color: rgba(255,255,255,0.28); }
   .form-note { font-size:0.82rem; color: var(--text-muted); margin-top: 18px; }
+  .form-error[hidden] { display:none; }
+  .form-btns { display:flex; gap:14px; }
+  .form-btns .btn { flex:1; justify-content:center; }
+  .btn-wa {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-muted); box-shadow: none;
+  }
+  .btn-wa:hover { border-color: #25D366; color: #25D366; transform: translateY(-3px); }
+  .btn-wa .wa-icon { color: #25D366; flex-shrink:0; }
 
   /* FOOTER */
   footer { border-top:1px solid var(--border); padding: 40px 0; }
@@ -302,6 +311,7 @@
   @media (max-width: 640px) {
     .wrap { padding: 0 22px; }
     .service-card, .form-card { padding: 32px; }
+    .form-btns { flex-direction: column; }
     .about { padding: 32px 0 24px; }
     .services { padding: 28px 0; }
     .portfolio { padding: 28px 0 36px; }
@@ -592,13 +602,23 @@
           <input type="tel" id="cf-phone" name="telefono" placeholder="Tu número (opcional)">
         </div>
         <div class="field">
+          <label for="cf-business">Tipo de negocio</label>
+          <input type="text" id="cf-business" name="tipo_negocio" placeholder="Ej. restaurante, gimnasio, tienda de ropa..." required>
+        </div>
+        <div class="field">
           <label for="cf-msg">Mensaje</label>
           <textarea id="cf-msg" name="message" placeholder="Cuéntame sobre tu proyecto..." required></textarea>
         </div>
-        <button type="submit" class="btn btn-primary" id="formSubmitBtn" style="width:100%; justify-content:center;">
-          <span class="btn-label">Enviar mensaje</span>
-        </button>
-        <p class="form-note form-error" id="formError" hidden>No se pudo enviar tu mensaje. Intenta de nuevo o escríbeme directo a <a href="mailto:jobrocha.oficial@gmail.com" style="color:var(--accent);">jobrocha.oficial@gmail.com</a>.</p>
+        <p class="form-note form-error" id="formError" role="alert" hidden></p>
+        <div class="form-btns">
+          <button type="submit" class="btn btn-primary" id="formSubmitBtn">
+            <span class="btn-label">Enviar mensaje</span>
+          </button>
+          <button type="button" class="btn btn-wa" id="formWaBtn">
+            <svg class="wa-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.77.46 3.45 1.34 4.95L2 22l5.27-1.39a9.9 9.9 0 0 0 4.77 1.21h.01c5.46 0 9.9-4.45 9.9-9.91A9.86 9.86 0 0 0 12.04 2Zm5.83 14.13c-.25.7-1.24 1.28-2.03 1.45-.54.11-1.24.2-3.6-.77-3.02-1.25-4.96-4.32-5.11-4.52-.15-.2-1.22-1.62-1.22-3.1 0-1.47.77-2.19 1.05-2.49.27-.3.6-.37.8-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.25.6.85 2.07.92 2.22.07.15.12.33.02.53-.1.2-.15.32-.3.5-.15.18-.31.4-.45.54-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12.99 2.06 1.3 2.36 1.45.3.15.48.13.65-.08.18-.2.75-.87.95-1.17.2-.3.4-.25.67-.15.27.1 1.73.81 2.02.96.3.15.5.22.57.35.07.13.07.74-.18 1.43Z"/></svg>
+            WhatsApp
+          </button>
+        </div>
         <p class="form-note">Te responderé directamente a tu correo o por WhatsApp en menos de 24 horas.</p>
       </div>
 
@@ -708,46 +728,93 @@
     targets.forEach(t => t.classList.add('in-view'));
   }
 
-  // Formulario de contacto — envío vía Web3Forms (AJAX, sin redirigir)
+  // Formulario de contacto — envío vía Web3Forms (AJAX) + WhatsApp
   const contactForm = document.getElementById('contactForm');
   if (contactForm) {
-    const fields = document.getElementById('formFields');
-    const success = document.getElementById('formSuccess');
+    const fields    = document.getElementById('formFields');
+    const success   = document.getElementById('formSuccess');
     const successName = document.getElementById('successName');
-    const errorMsg = document.getElementById('formError');
+    const errorMsg  = document.getElementById('formError');
     const submitBtn = document.getElementById('formSubmitBtn');
-    const btnLabel = submitBtn.querySelector('.btn-label');
+    const waBtn     = document.getElementById('formWaBtn');
+    const btnLabel  = submitBtn.querySelector('.btn-label');
+    const WA_NUMBER = '523324893286';
 
-    contactForm.addEventListener('submit', async function(ev){
+    function getValues() {
+      return {
+        name:     contactForm.querySelector('#cf-name').value.trim(),
+        email:    contactForm.querySelector('#cf-email').value.trim(),
+        phone:    contactForm.querySelector('#cf-phone').value.trim(),
+        business: contactForm.querySelector('#cf-business').value.trim(),
+        message:  contactForm.querySelector('#cf-msg').value.trim(),
+      };
+    }
+
+    function validate(v) {
+      if (!v.name)     return 'Por favor escribe tu nombre.';
+      if (!v.email)    return 'Por favor escribe tu correo electrónico.';
+      if (!v.business) return 'Por favor indica tu tipo de negocio.';
+      if (!v.message)  return 'Por favor escribe tu mensaje.';
+      return null;
+    }
+
+    function showError(msg) {
+      errorMsg.innerHTML = msg;
+      errorMsg.hidden = false;
+    }
+
+    function setLoading(on) {
+      submitBtn.disabled = on;
+      waBtn.disabled = on;
+      btnLabel.textContent = on ? 'Enviando…' : 'Enviar mensaje';
+    }
+
+    // Punto central de envío — aquí se agregará Supabase cuando esté lista la base de datos
+    async function handleSubmit() {
+      // TODO Supabase: await supabase.from('consultas').insert([{ ...getValues() }]);
+
+      const formData = new FormData(contactForm);
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: formData,
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || 'Error al enviar');
+    }
+
+    contactForm.addEventListener('submit', async function(ev) {
       ev.preventDefault();
       errorMsg.hidden = true;
-      submitBtn.disabled = true;
-      btnLabel.textContent = 'Enviando…';
 
+      const v = getValues();
+      const err = validate(v);
+      if (err) { showError(err); return; }
+
+      setLoading(true);
       try {
-        const formData = new FormData(contactForm);
-        const res = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Accept': 'application/json' },
-          body: formData
-        });
-        const data = await res.json();
-
-        if (data.success) {
-          const name = (formData.get('name') || '').toString().trim();
-          successName.textContent = name || 'amigo';
-          fields.hidden = true;
-          success.hidden = false;
-          contactForm.reset();
-        } else {
-          throw new Error(data.message || 'No se pudo enviar el mensaje');
-        }
-      } catch (err) {
-        errorMsg.hidden = false;
+        await handleSubmit();
+        successName.textContent = v.name || 'amigo';
+        fields.hidden = true;
+        success.hidden = false;
+        contactForm.reset();
+      } catch {
+        showError('No se pudo enviar tu mensaje. Intenta de nuevo o escríbeme a <a href="mailto:jobrocha.oficial@gmail.com" style="color:var(--accent);">jobrocha.oficial@gmail.com</a>.');
       } finally {
-        submitBtn.disabled = false;
-        btnLabel.textContent = 'Enviar mensaje';
+        setLoading(false);
       }
+    });
+
+    waBtn.addEventListener('click', function() {
+      errorMsg.hidden = true;
+
+      const v = getValues();
+      const err = validate(v);
+      if (err) { showError(err); return; }
+
+      const phoneLine = v.phone ? `\n• Teléfono: ${v.phone}` : '';
+      const text = `Hola Job, vi tu página y quiero una consulta:\n• Nombre: ${v.name}\n• Tipo de negocio: ${v.business}${phoneLine}\n• Mensaje: ${v.message}`;
+      window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
     });
   }
 })();
