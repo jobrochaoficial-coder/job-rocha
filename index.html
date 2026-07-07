@@ -585,7 +585,7 @@
     </div>
 
     <form class="form-card" id="contactForm" data-reveal="right">
-      <input type="hidden" name="access_key" value="586cd569-0b3c-4f4f-8eeb-44032a4b8256">
+      <input type="hidden" name="access_key" id="cf-web3key">
       <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off">
 
       <div class="form-fields" id="formFields">
@@ -656,18 +656,56 @@
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.77.46 3.45 1.34 4.95L2 22l5.27-1.39a9.9 9.9 0 0 0 4.77 1.21h.01c5.46 0 9.9-4.45 9.9-9.91A9.86 9.86 0 0 0 12.04 2Zm5.83 14.13c-.25.7-1.24 1.28-2.03 1.45-.54.11-1.24.2-3.6-.77-3.02-1.25-4.96-4.32-5.11-4.52-.15-.2-1.22-1.62-1.22-3.1 0-1.47.77-2.19 1.05-2.49.27-.3.6-.37.8-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.25.6.85 2.07.92 2.22.07.15.12.33.02.53-.1.2-.15.32-.3.5-.15.18-.31.4-.45.54-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12.99 2.06 1.3 2.36 1.45.3.15.48.13.65-.08.18-.2.75-.87.95-1.17.2-.3.4-.25.67-.15.27.1 1.73.81 2.02.96.3.15.5.22.57.35.07.13.07.74-.18 1.43Z"/></svg>
 </a>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 (function(){
+
+  // ===== CONFIGURACIÓN — REEMPLAZAR SOLO ESTOS VALORES =====
+
+  // 1) URL del proyecto de Supabase.
+  //    Supabase > Configuración del proyecto > Data API > Project URL
+  //    (empieza con https:// y termina en .supabase.co)
+  const SUPABASE_URL = 'https://nhjfzniroupvepituxdr.supabase.co/rest/v1/';
+
+  // 2) Clave PUBLICABLE de Supabase (segura para el navegador).
+  //    Supabase > Configuración > Claves API > "Clave publicable"
+  //    IMPORTANTE: usa la que empieza con  sb_publishable_
+  //    NUNCA uses la que empieza con  sb_secret_  aquí.
+  const SUPABASE_KEY = 'sb_publishable_iuBm6T9GtC_7O1_tkjbgQw__YAWfcYU';
+
+  // 3) Número de WhatsApp (formato internacional, sin + ni espacios).
+  const WA_NUMBER = '523324893286';
+
+  // 4) Clave de Web3Forms (ya configurada — no cambiar salvo que la renueves).
+  //    Web3Forms > tu cuenta > Access Key
+  const WEB3_KEY = '586cd569-0b3c-4f4f-8eeb-44032a4b8256';
+
+  // ===== FIN DE CONFIGURACIÓN =====
+
+
+  // --- Inicializar Supabase (null si los placeholders aún no fueron reemplazados) ---
+  const _sb = (typeof window.supabase !== 'undefined' &&
+               SUPABASE_URL !== 'PEGA_AQUI_TU_PROJECT_URL')
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+    : null;
+
+  // --- Inyectar WEB3_KEY en el campo oculto del formulario ---
+  const _k = document.getElementById('cf-web3key');
+  if (_k) _k.value = WEB3_KEY;
+
+
+  // --- Año en el footer ---
   document.getElementById('year').textContent = new Date().getFullYear();
 
+  // --- Nav: fondo al hacer scroll ---
   const nav = document.getElementById('siteNav');
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 40);
-  }, { passive:true });
+  }, { passive: true });
 
-  // Menú hamburguesa (móvil/tablet)
+  // --- Menú hamburguesa (móvil/tablet) ---
   const navToggle = document.getElementById('navToggle');
-  const navLinks = document.getElementById('navLinks');
+  const navLinks  = document.getElementById('navLinks');
   if (navToggle && navLinks) {
     const closeMenu = () => {
       navLinks.classList.remove('open');
@@ -683,9 +721,9 @@
     navLinks.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
   }
 
-  // Acordeón de Preguntas Frecuentes
+  // --- Acordeón FAQ ---
   document.querySelectorAll('.faq-item').forEach(item => {
-    const btn = item.querySelector('.faq-q');
+    const btn   = item.querySelector('.faq-q');
     const panel = item.querySelector('.faq-a');
     btn.addEventListener('click', () => {
       const isOpen = item.classList.contains('is-open');
@@ -701,7 +739,7 @@
     });
   });
 
-  // Oculta el botón flotante de WhatsApp al entrar a "Contacto" para que no tape el correo ni "Enviar mensaje"
+  // --- Ocultar botón flotante de WhatsApp cuando el usuario está en Contacto ---
   const waFloat = document.querySelector('.wa-float');
   if (waFloat) waFloat.classList.remove('is-hidden');
   const contactSection = document.getElementById('contacto');
@@ -712,14 +750,12 @@
     waIO.observe(contactSection);
   }
 
+  // --- Animaciones de reveal al hacer scroll ---
   const targets = document.querySelectorAll('[data-reveal]');
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
       entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('in-view');
-          io.unobserve(e.target);
-        }
+        if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); }
       });
     }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
     targets.forEach(t => io.observe(t));
@@ -728,17 +764,16 @@
     targets.forEach(t => t.classList.add('in-view'));
   }
 
-  // Formulario de contacto — envío vía Web3Forms (AJAX) + WhatsApp
+  // --- Formulario de contacto ---
   const contactForm = document.getElementById('contactForm');
   if (contactForm) {
-    const fields    = document.getElementById('formFields');
-    const success   = document.getElementById('formSuccess');
+    const fields      = document.getElementById('formFields');
+    const success     = document.getElementById('formSuccess');
     const successName = document.getElementById('successName');
-    const errorMsg  = document.getElementById('formError');
-    const submitBtn = document.getElementById('formSubmitBtn');
-    const waBtn     = document.getElementById('formWaBtn');
-    const btnLabel  = submitBtn.querySelector('.btn-label');
-    const WA_NUMBER = '523324893286';
+    const errorMsg    = document.getElementById('formError');
+    const submitBtn   = document.getElementById('formSubmitBtn');
+    const waBtn       = document.getElementById('formWaBtn');
+    const btnLabel    = submitBtn.querySelector('.btn-label');
 
     function getValues() {
       return {
@@ -769,12 +804,32 @@
       btnLabel.textContent = on ? 'Enviando…' : 'Enviar mensaje';
     }
 
-    // Punto central de envío — aquí se agregará Supabase cuando esté lista la base de datos
-    async function handleSubmit() {
-      // TODO Supabase: await supabase.from('consultas').insert([{ ...getValues() }]);
+    // Guardar consulta en Supabase (tolerante — los errores no interrumpen el flujo)
+    async function saveToSupabase(v) {
+      if (!_sb) return;
+      const { error } = await _sb.from('consultas').insert([{
+        nombre:       v.name,
+        email:        v.email,
+        telefono:     v.phone || null,
+        tipo_negocio: v.business,
+        mensaje:      v.message,
+      }]);
+      if (error) throw error;
+    }
 
+    // Envío principal: primero Supabase (tolerante), luego Web3Forms (crítico)
+    async function handleSubmit(v) {
+      // 1. Guardar en Supabase — si falla, solo se registra en consola y continúa
+      try {
+        await saveToSupabase(v);
+      } catch (sbErr) {
+        console.error('[Supabase]', sbErr);
+      }
+
+      // 2. Enviar correo por Web3Forms
       const formData = new FormData(contactForm);
-      const res = await fetch('https://api.web3forms.com/submit', {
+      formData.set('access_key', WEB3_KEY);
+      const res  = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Accept': 'application/json' },
         body: formData,
@@ -783,19 +838,20 @@
       if (!data.success) throw new Error(data.message || 'Error al enviar');
     }
 
+    // Botón "Enviar mensaje" (correo + Supabase)
     contactForm.addEventListener('submit', async function(ev) {
       ev.preventDefault();
       errorMsg.hidden = true;
 
-      const v = getValues();
+      const v   = getValues();
       const err = validate(v);
       if (err) { showError(err); return; }
 
       setLoading(true);
       try {
-        await handleSubmit();
+        await handleSubmit(v);
         successName.textContent = v.name || 'amigo';
-        fields.hidden = true;
+        fields.hidden  = true;
         success.hidden = false;
         contactForm.reset();
       } catch {
@@ -805,18 +861,22 @@
       }
     });
 
-    waBtn.addEventListener('click', function() {
+    // Botón "WhatsApp" (Supabase tolerante + abrir wa.me)
+    waBtn.addEventListener('click', async function() {
       errorMsg.hidden = true;
 
-      const v = getValues();
+      const v   = getValues();
       const err = validate(v);
       if (err) { showError(err); return; }
+
+      try { await saveToSupabase(v); } catch (sbErr) { console.error('[Supabase]', sbErr); }
 
       const phoneLine = v.phone ? `\n• Teléfono: ${v.phone}` : '';
       const text = `Hola Job, vi tu página y quiero una consulta:\n• Nombre: ${v.name}\n• Tipo de negocio: ${v.business}${phoneLine}\n• Mensaje: ${v.message}`;
       window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
     });
   }
+
 })();
 </script>
 </body>
